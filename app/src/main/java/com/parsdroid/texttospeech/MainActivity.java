@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.util.Locale;
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     EditText mEditText;
     Button mButtonSpeak;
     TextToSpeech mTTS;
+    SeekBar mSeekbarPitch;
+    SeekBar mSeekbarSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
         mEditText = findViewById(R.id.editText);
         mButtonSpeak = findViewById(R.id.buttonSpeak);
+        mSeekbarPitch = findViewById(R.id.seekBarPitch);
+        mSeekbarSpeech = findViewById(R.id.seekBarSpeed);
 
         mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -60,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
         if (text.length() == 0) {
             Toast.makeText(this, "text is empty", Toast.LENGTH_SHORT).show();
         } else {
+            float pitch = mSeekbarPitch.getProgress() / 50;
+            if (pitch <= 0.1) pitch = 0.1f;
+            mTTS.setPitch(pitch);
+
+            float speed = mSeekbarSpeech.getProgress() / 50;
+            if (speed <= 0.1) speed = 0.1f;
+            mTTS.setSpeechRate(speed);
+
             mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
