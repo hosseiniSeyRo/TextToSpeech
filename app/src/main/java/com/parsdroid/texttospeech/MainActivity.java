@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     TextToSpeech mTTS;
     SeekBar mSeekbarPitch;
     SeekBar mSeekbarSpeech;
+    RadioGroup rgLanguage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonSpeak = findViewById(R.id.buttonSpeak);
         mSeekbarPitch = findViewById(R.id.seekBarPitch);
         mSeekbarSpeech = findViewById(R.id.seekBarSpeed);
+        rgLanguage = findViewById(R.id.rg_language);
 
         mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -73,7 +76,27 @@ public class MainActivity extends AppCompatActivity {
             if (speed <= 0.1) speed = 0.1f;
             mTTS.setSpeechRate(speed);
 
-            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            int result;
+            int selectedLanguageId = rgLanguage.getCheckedRadioButtonId();
+            switch (selectedLanguageId) {
+                default:
+                case R.id.rb_english:
+                    result = mTTS.setLanguage(Locale.ENGLISH);
+                    break;
+                case R.id.rb_french:
+                    result = mTTS.setLanguage(Locale.FRANCE);
+                    break;
+                case R.id.rb_turkish:
+                    result = mTTS.setLanguage(new Locale("tr", "TR"));
+                    break;
+            }
+
+            if (result == TextToSpeech.LANG_NOT_SUPPORTED
+                    || result == TextToSpeech.LANG_MISSING_DATA) {
+                Toast.makeText(this, "this language not supported", Toast.LENGTH_SHORT).show();
+            } else {
+                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            }
         }
     }
 
