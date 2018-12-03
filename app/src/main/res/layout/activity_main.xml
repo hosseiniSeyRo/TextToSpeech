@@ -36,6 +36,33 @@
         android:layout_height="wrap_content"
         android:progress="50" />
 
+    <RadioGroup
+        android:id="@+id/rg_language"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_english"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="English" />
+
+        <RadioButton
+            android:id="@+id/rb_french"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="French" />
+
+        <RadioButton
+            android:id="@+id/rb_turkish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Turkish" />
+    </RadioGroup>
+
     <Button
         android:id="@+id/buttonSpeak"
         android:layout_width="wrap_content"
