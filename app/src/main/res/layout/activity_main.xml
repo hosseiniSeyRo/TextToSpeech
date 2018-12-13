@@ -62,12 +62,12 @@
             android:layout_height="wrap_content"
             android:text="Turkish" />
     </RadioGroup>
-
     <Button
         android:id="@+id/buttonSpeak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_gravity="center_horizontal"
-        android:text="Say Text" />
+        android:text="Say text" />
+
 </LinearLayout>
