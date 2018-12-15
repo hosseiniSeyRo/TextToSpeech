@@ -7,16 +7,20 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 
@@ -29,12 +33,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TTS_TAG = "TTS";
     private static final String GOOGLE_TTS_PACKAGE = "com.google.android.tts";
+    private static final String MY_TEXT_UTTERANCE_ID = "MyText";
     EditText mEditText;
-    Button mButtonSpeak;
     TextToSpeech mTTS;
     SeekBar mSeekBarPitch;
     SeekBar mSeekBarSpeed;
     RadioGroup rgLanguage;
+    RelativeLayout speakBtnContainer;
+    ImageView speakImg;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mEditText = findViewById(R.id.editText);
-        mButtonSpeak = findViewById(R.id.buttonSpeak);
         mSeekBarPitch = findViewById(R.id.seekBarPitch);
         mSeekBarSpeed = findViewById(R.id.seekBarSpeed);
         rgLanguage = findViewById(R.id.rg_language);
+        speakBtnContainer = findViewById(R.id.speakBtnContainer);
+        speakImg = findViewById(R.id.speakImg);
+        progressBar = findViewById(R.id.progressBar);
 
         mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -62,15 +71,58 @@ public class MainActivity extends AppCompatActivity {
                     if (result == TextToSpeech.LANG_NOT_SUPPORTED
                             || result == TextToSpeech.LANG_MISSING_DATA) {
                         Log.e(TTS_TAG, "language not supported");
+                    } else {
+                        mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                            @Override
+                            public void onStart(String utteranceId) {
+                                if (utteranceId.equals(MY_TEXT_UTTERANCE_ID)) {
+                                    speakStart();
+                                }
+                            }
+
+                            @Override
+                            public void onDone(String utteranceId) {
+                                if (utteranceId.equals(MY_TEXT_UTTERANCE_ID)) {
+                                    speakDone();
+                                }
+                            }
+
+                            @Override
+                            public void onError(String utteranceId) {
+
+                            }
+                        });
                     }
                 }
             }
         });
 
-        mButtonSpeak.setOnClickListener(new View.OnClickListener() {
+        speakBtnContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 speak();
+            }
+        });
+    }
+
+    private void speakDone() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                speakImg.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "TTS Done", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void speakStart() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                speakImg.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                Toast.makeText(MainActivity.this, "TTS start", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -150,7 +202,9 @@ public class MainActivity extends AppCompatActivity {
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Toast.makeText(this, "Language not supported", Toast.LENGTH_SHORT).show();
             } else {
-                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                HashMap<String, String> map = new HashMap<>();
+                map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, MY_TEXT_UTTERANCE_ID);
+                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, map);
             }
         }
     }

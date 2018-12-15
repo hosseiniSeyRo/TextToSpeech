@@ -62,12 +62,28 @@
             android:layout_height="wrap_content"
             android:text="Turkish" />
     </RadioGroup>
-    <Button
-        android:id="@+id/buttonSpeak"
+
+    <RelativeLayout
+        android:id="@+id/speakBtnContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="32dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Say text" />
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/speakImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_volume" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
 </LinearLayout>
