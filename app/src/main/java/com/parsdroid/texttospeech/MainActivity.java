@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout speakBtnContainer;
     ImageView speakImg;
     ProgressBar progressBar;
+    Button persianActivityBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         speakBtnContainer = findViewById(R.id.speakBtnContainer);
         speakImg = findViewById(R.id.speakImg);
         progressBar = findViewById(R.id.progressBar);
+        persianActivityBtn = findViewById(R.id.persianActivityBtn);
+
 
         mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -101,6 +105,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 speak();
+            }
+        });
+
+        persianActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent persianIntent = new Intent(MainActivity.this, PersianActivity.class);
+                startActivity(persianIntent);
             }
         });
     }
